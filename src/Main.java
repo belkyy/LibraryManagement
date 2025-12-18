@@ -14,7 +14,7 @@ public class Main {
         User currentUser = null;
 
         while (currentUser == null) {
-            System.out.println("\n===== LOGIN MENU =====");
+            System.out.println("\n=== LOGIN MENU ===");
             System.out.println("1) Sign Up");
             System.out.println("2) Login");
             System.out.println("3) Exit");
