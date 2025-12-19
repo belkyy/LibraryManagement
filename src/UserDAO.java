@@ -18,7 +18,8 @@ public class UserDAO {
             if (rs.next()) {
                 return new User(
                     rs.getString("username"),
-                    rs.getString("password")
+                    rs.getString("password"),
+                    rs.getString("role")  
                 );
             }
 
@@ -45,7 +46,7 @@ public class UserDAO {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace(); // 
+            e.printStackTrace();
             return false;
         }
     }

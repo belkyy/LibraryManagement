@@ -6,8 +6,9 @@ public class User {
 
     private final String username;
     private final String passwordHash; // hashlenmiş parola
+    private final String role;
 
-    public User(String username, String password) {
+    public User(String username, String password, String role) {
         if (username == null || username.isEmpty())
             throw new IllegalArgumentException("Username cannot be empty");
 
@@ -16,8 +17,13 @@ public class User {
 
         this.username = username;
         this.passwordHash = hash(password);
+        this.role = role;
     }
 
+    public String getRole() {
+    	return role;
+    }; 
+    
     public String getUsername() {
         return username;
     }
