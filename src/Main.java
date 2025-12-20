@@ -1,11 +1,13 @@
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
 
     static LibraryManager manager = new LibraryManager();
     static ArrayList<Member> members = new ArrayList<>();
+    static Random random = new Random();
 
     public static void main(String[] args) {
 
@@ -100,16 +102,39 @@ public class Main {
 
             switch (option) {
 
-                case 1 -> {
-                    System.out.print("Book ID: ");
-                    String id = sc.nextLine();
+            case 1 -> {
+
+                boolean addMore = true;
+
+                while (addMore) {
+
+                    String id = generateUniqueBookId();
+                    System.out.println("Generated Book ID: " + id);
+
                     System.out.print("Title: ");
                     String title = sc.nextLine();
+
                     System.out.print("Author: ");
                     String author = sc.nextLine();
-                    manager.addBook(new Book(id, title, author));
-                    System.out.println("Book added.");
+
+                    Book book = new Book(id, title, author);
+
+                    if (BookDAO.addBook(book)) {
+                        manager.addBook(book);
+                        System.out.println("Book added successfully.");
+                    } else {
+                        System.out.println("Failed to add book.");
+                    }
+
+                    System.out.print("Exit add book? (yes/no): ");
+                    String answer = sc.nextLine();
+
+                    if (answer.equalsIgnoreCase("yes")) {
+                        addMore = false;
+                    }
                 }
+            }
+
 
                 case 2 -> {
                     System.out.print("Book ID: ");
@@ -241,4 +266,19 @@ public class Main {
             }
         }
     }
+
+    // =====================================================
+    // RANDOM 5 DIGIT BOOK ID (DB CHECK)
+    // =====================================================
+    public static String generateUniqueBookId() {
+        Random r = new Random();
+        String id;
+
+        do {
+            id = String.valueOf(10000 + r.nextInt(90000));
+        } while (BookDAO.bookIdExists(id)); // DB kontrolü
+
+        return id;
+    }
+
 }

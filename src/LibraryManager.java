@@ -95,4 +95,8 @@ public class LibraryManager {
         }
         return false;
     }
+    public void loadBooksFromDB() {
+        books.clear();
+        books.addAll(BookDAO.getAllBooks());
+    }
 }
