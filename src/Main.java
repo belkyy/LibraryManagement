@@ -67,6 +67,11 @@ public class Main {
         }
 
         // ===============================
+        // LOAD BOOKS FROM DB
+        // ===============================
+        manager.loadBooksFromDB();
+
+        // ===============================
         // ROLE BASED MENU
         // ===============================
         if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
@@ -102,49 +107,51 @@ public class Main {
 
             switch (option) {
 
-            case 1 -> {
+                case 1 -> {
+                    boolean addMore = true;
 
-                boolean addMore = true;
+                    while (addMore) {
 
-                while (addMore) {
+                        int id = generateUniqueBookId();
+                        System.out.println("Generated Book ID: " + id);
 
-                    String id = generateUniqueBookId();
-                    System.out.println("Generated Book ID: " + id);
+                        System.out.print("Title: ");
+                        String title = sc.nextLine();
 
-                    System.out.print("Title: ");
-                    String title = sc.nextLine();
+                        System.out.print("Author: ");
+                        String author = sc.nextLine();
 
-                    System.out.print("Author: ");
-                    String author = sc.nextLine();
+                        Book book = new Book(id, title, author);
 
-                    Book book = new Book(id, title, author);
+                        if (BookDAO.addBook(book)) {
+                            manager.addBook(book);
+                            System.out.println("Book added successfully.");
+                        } else {
+                            System.out.println("Failed to add book.");
+                        }
 
-                    if (BookDAO.addBook(book)) {
-                        manager.addBook(book);
-                        System.out.println("Book added successfully.");
-                    } else {
-                        System.out.println("Failed to add book.");
-                    }
+                        System.out.print("Exit add book? (yes/no): ");
+                        String answer = sc.nextLine();
 
-                    System.out.print("Exit add book? (yes/no): ");
-                    String answer = sc.nextLine();
-
-                    if (answer.equalsIgnoreCase("yes")) {
-                        addMore = false;
+                        if (answer.equalsIgnoreCase("yes")) {
+                            addMore = false;
+                        }
                     }
                 }
-            }
-
 
                 case 2 -> {
                     System.out.print("Book ID: ");
-                    String id = sc.nextLine();
-                    System.out.println(
-                            manager.removeBook(id)
-                                    ? "Book removed."
-                                    : "Remove failed."
-                    );
+                    int id = sc.nextInt();
+                    sc.nextLine();
+
+                    if (BookDAO.removeBook(id)) {
+                        manager.loadBooksFromDB(); // 🔥 DB → RAM senkron
+                        System.out.println("Book removed.");
+                    } else {
+                        System.out.println("Remove failed.");
+                    }
                 }
+
 
                 case 3 -> {
                     System.out.print("Member ID: ");
@@ -236,7 +243,9 @@ public class Main {
 
                 case 2 -> {
                     System.out.print("Book ID: ");
-                    String bid = sc.nextLine();
+                    int bid = sc.nextInt();
+                    sc.nextLine();
+
                     System.out.print("Member ID: ");
                     String mid = sc.nextLine();
 
@@ -254,7 +263,9 @@ public class Main {
 
                 case 3 -> {
                     System.out.print("Book ID: ");
-                    String id = sc.nextLine();
+                    int id = sc.nextInt();
+                    sc.nextLine();
+
                     System.out.println(
                             manager.returnBook(id)
                                     ? "Book returned."
@@ -268,17 +279,14 @@ public class Main {
     }
 
     // =====================================================
-    // RANDOM 5 DIGIT BOOK ID (DB CHECK)
+    // RANDOM UNIQUE 5 DIGIT BOOK ID
     // =====================================================
-    public static String generateUniqueBookId() {
-        Random r = new Random();
-        String id;
-
+    public static int generateUniqueBookId() {
+        int id;
         do {
-            id = String.valueOf(10000 + r.nextInt(90000));
-        } while (BookDAO.bookIdExists(id)); // DB kontrolü
+            id = 10000 + random.nextInt(90000);
+        } while (BookDAO.bookIdExists(id));
 
         return id;
     }
-
 }

@@ -8,7 +8,7 @@ public class LibraryManager {
     private final List<Loaning> loans = new ArrayList<>();
 
     // -------------------------
-    // ADD BOOK
+    // ADD BOOK (ADMIN)
     // -------------------------
     public void addBook(Book b) {
         if (b == null) return;
@@ -18,24 +18,26 @@ public class LibraryManager {
     // -------------------------
     // REMOVE BOOK (ADMIN)
     // -------------------------
-    public boolean removeBook(String id) {
-        if (id == null) return false;
+    public boolean removeBook(int id) {
 
-        // Ödünçteyse silme
+        // Ödünçte mi kontrolü
         boolean isLoaned = loans.stream()
-                .anyMatch(l -> l.getBook().getId().equals(id)
-                        && l.getReturnDate() == null);
+                .anyMatch(l ->
+                        l.getBook().getId() == id
+                        && l.getReturnDate() == null
+                );
 
-        if (isLoaned) return false;
+        if (isLoaned) {
+            return false; // ödünçteyse silinemez
+        }
 
-        return books.removeIf(b -> b.getId().equals(id));
+        return books.removeIf(b -> b.getId() == id);
     }
 
     // -------------------------
-    // SHOW ALL BOOKS ⭐ (EKLENEN)
+    // SHOW ALL BOOKS
     // -------------------------
     public List<Book> showAllBooks() {
-        // dışarıdan değiştirilemesin
         return Collections.unmodifiableList(books);
     }
 
@@ -43,6 +45,7 @@ public class LibraryManager {
     // SEARCH BOOK
     // -------------------------
     public List<Book> searchBooks(String key) {
+
         if (key == null || key.isEmpty())
             return Collections.emptyList();
 
@@ -60,11 +63,13 @@ public class LibraryManager {
     // -------------------------
     // BORROW BOOK (USER)
     // -------------------------
-    public boolean borrowBook(String bookId, Member member) {
-        if (bookId == null || member == null) return false;
+    public boolean borrowBook(int bookId, Member member) {
+
+        if (member == null) return false;
 
         for (Book b : books) {
-            if (b.getId().equals(bookId)) {
+
+            if (b.getId() == bookId) {
 
                 if (!b.isAvailable()) {
                     return false;
@@ -81,11 +86,11 @@ public class LibraryManager {
     // -------------------------
     // RETURN BOOK (USER)
     // -------------------------
-    public boolean returnBook(String bookId) {
-        if (bookId == null) return false;
+    public boolean returnBook(int bookId) {
 
         for (Loaning loan : loans) {
-            if (loan.getBook().getId().equals(bookId)
+
+            if (loan.getBook().getId() == bookId
                     && loan.getReturnDate() == null) {
 
                 loan.returnBook();
@@ -95,6 +100,10 @@ public class LibraryManager {
         }
         return false;
     }
+
+    // -------------------------
+    // LOAD FROM DATABASE
+    // -------------------------
     public void loadBooksFromDB() {
         books.clear();
         books.addAll(BookDAO.getAllBooks());

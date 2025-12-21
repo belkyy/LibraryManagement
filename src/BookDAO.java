@@ -15,7 +15,7 @@ public class BookDAO {
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, book.getId());
+            ps.setInt(1, book.getId());          // 🔥 INT
             ps.setString(2, book.getTitle());
             ps.setString(3, book.getAuthor());
             ps.setBoolean(4, book.isAvailable());
@@ -43,7 +43,7 @@ public class BookDAO {
 
             while (rs.next()) {
                 Book b = new Book(
-                        rs.getString("id"),
+                        rs.getInt("id"),          // 🔥 INT
                         rs.getString("title"),
                         rs.getString("author")
                 );
@@ -57,19 +57,18 @@ public class BookDAO {
 
         return books;
     }
-    
-    // -----------------
-    // Random ID maker
-    // -----------------
-    
-    public static boolean bookIdExists(String id) {
 
-        String sql = "SELECT id FROM books WHERE id=?";
+    // -------------------------
+    // CHECK BOOK ID EXISTS
+    // -------------------------
+    public static boolean bookIdExists(int id) {
+
+        String sql = "SELECT id FROM books WHERE id = ?";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, id);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             return rs.next();
 
@@ -79,4 +78,43 @@ public class BookDAO {
         return false;
     }
 
+    // -------------------------
+    // REMOVE BOOK (ADMIN)
+    // -------------------------
+    public static boolean removeBook(int bookId) {
+
+        String checkSql =
+            "SELECT available FROM books WHERE id = ?";
+
+        String deleteSql =
+            "DELETE FROM books WHERE id = ?";
+
+        try (Connection con = DBConnection.getConnection()) {
+
+            // Kitap var mı + ödünçte mi?
+            try (PreparedStatement checkPs = con.prepareStatement(checkSql)) {
+                checkPs.setInt(1, bookId);
+                ResultSet rs = checkPs.executeQuery();
+
+                if (!rs.next()) {
+                    return false; // kitap yok
+                }
+
+                boolean available = rs.getBoolean("available");
+                if (!available) {
+                    return false; // ödünçte → silinemez
+                }
+            }
+
+            // Silme
+            try (PreparedStatement delPs = con.prepareStatement(deleteSql)) {
+                delPs.setInt(1, bookId);
+                return delPs.executeUpdate() > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
