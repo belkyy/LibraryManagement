@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -6,7 +5,6 @@ import java.util.Scanner;
 public class Main {
 
     static LibraryManager manager = new LibraryManager();
-    static ArrayList<Member> members = new ArrayList<>();
     static Random random = new Random();
 
     public static void main(String[] args) {
@@ -34,50 +32,50 @@ public class Main {
             }
             sc.nextLine();
 
-            if (choice == 1) {
-                System.out.print("Username: ");
-                String u = sc.nextLine();
-                System.out.print("Password: ");
-                String p = sc.nextLine();
+            switch (choice) {
+                case 1 -> {
+                    System.out.print("Username: ");
+                    String u = sc.nextLine();
+                    System.out.print("Password: ");
+                    String p = sc.nextLine();
 
-                if (UserDAO.signUp(u, p)) {
-                    System.out.println("Sign up successful!");
-                } else {
-                    System.out.println("Username already exists!");
+                    System.out.println(
+                        UserDAO.signUp(u, p)
+                            ? "Sign up successful!"
+                            : "Username already exists!"
+                    );
                 }
 
-            } else if (choice == 2) {
-                System.out.print("Username: ");
-                String u = sc.nextLine();
-                System.out.print("Password: ");
-                String p = sc.nextLine();
+                case 2 -> {
+                    System.out.print("Username: ");
+                    String u = sc.nextLine();
+                    System.out.print("Password: ");
+                    String p = sc.nextLine();
 
-                currentUser = UserDAO.login(u, p);
+                    currentUser = UserDAO.login(u, p);
 
-                if (currentUser != null) {
-                    System.out.println("Login successful!");
-                } else {
-                    System.out.println("Wrong username or password!");
+                    System.out.println(
+                        currentUser != null
+                            ? "Login successful!"
+                            : "Wrong username or password!"
+                    );
                 }
 
-            } else if (choice == 3) {
-                System.out.println("Goodbye!");
-                System.exit(0);
+                case 3 -> {
+                    System.out.println("Goodbye!");
+                    System.exit(0);
+                }
             }
         }
 
-        // ===============================
-        // LOAD BOOKS FROM DB
-        // ===============================
+        // DB → RAM
         manager.loadBooksFromDB();
 
-        // ===============================
-        // ROLE BASED MENU
-        // ===============================
+        // ROLE MENU
         if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
             adminMenu(sc);
         } else {
-            userMenu(sc);
+            userMenu(sc, currentUser);
         }
 
         sc.close();
@@ -94,11 +92,11 @@ public class Main {
             System.out.println("\n===== ADMIN MENU =====");
             System.out.println("1) Add Book");
             System.out.println("2) Remove Book");
-            System.out.println("3) Add Member");
-            System.out.println("4) Remove Member");
+            System.out.println("3) Add User");
+            System.out.println("4) Remove User");
             System.out.println("5) Show Books");
             System.out.println("6) Search Book");
-            System.out.println("7) Show Members");
+            System.out.println("7) Show Users");
             System.out.println("8) Exit");
             System.out.print("Choose: ");
 
@@ -109,7 +107,6 @@ public class Main {
 
                 case 1 -> {
                     boolean addMore = true;
-
                     while (addMore) {
 
                         int id = generateUniqueBookId();
@@ -125,17 +122,13 @@ public class Main {
 
                         if (BookDAO.addBook(book)) {
                             manager.addBook(book);
-                            System.out.println("Book added successfully.");
+                            System.out.println("Book added.");
                         } else {
-                            System.out.println("Failed to add book.");
+                            System.out.println("Add failed.");
                         }
 
                         System.out.print("Exit add book? (yes/no): ");
-                        String answer = sc.nextLine();
-
-                        if (answer.equalsIgnoreCase("yes")) {
-                            addMore = false;
-                        }
+                        addMore = !sc.nextLine().equalsIgnoreCase("yes");
                     }
                 }
 
@@ -145,66 +138,46 @@ public class Main {
                     sc.nextLine();
 
                     if (BookDAO.removeBook(id)) {
-                        manager.loadBooksFromDB(); // 🔥 DB → RAM senkron
+                        manager.loadBooksFromDB();
                         System.out.println("Book removed.");
                     } else {
                         System.out.println("Remove failed.");
                     }
                 }
 
-
                 case 3 -> {
-                    System.out.print("Member ID: ");
-                    String mid = sc.nextLine();
-                    System.out.print("Name: ");
-                    String name = sc.nextLine();
-                    System.out.print("Student (yes/no): ");
-                    String s = sc.nextLine();
+                	System.out.print("Username: ");
+                    String u = sc.nextLine();
+                    System.out.print("Password: ");
+                    String p = sc.nextLine();
 
-                    Member m = s.equalsIgnoreCase("yes")
-                            ? new StudentMember(name, mid)
-                            : new Member(name, mid);
-
-                    members.add(m);
-                    System.out.println("Member added.");
+                    boolean ok = UserDAO.addMember(u, p, false);
+                    System.out.println(ok ? "Member added ✅" : "Failed ❌");
                 }
 
                 case 4 -> {
-                    System.out.print("Member ID: ");
-                    String id = sc.nextLine();
-                    members.removeIf(m -> m.getID().equals(id));
-                    System.out.println("Member removed.");
-                }
+                    System.out.print("Username: ");
+                    String u = sc.nextLine();
 
-                case 5 -> {
-                    System.out.println("\n--- BOOKS ---");
-                    manager.showAllBooks().forEach(b ->
-                            System.out.println(
-                                    b.getId() + " | " +
-                                    b.getTitle() + " | " +
-                                    b.getAuthor() + " | " +
-                                    (b.isAvailable() ? "Available" : "Borrowed")
-                            )
+                    System.out.println(
+                        UserDAO.removeMember(u)
+                            ? "User removed."
+                            : "Remove failed."
                     );
                 }
+
+                case 5 -> manager.showAllBooks()
+                        .forEach(System.out::println);
 
                 case 6 -> {
                     System.out.print("Keyword: ");
                     String key = sc.nextLine();
-                    manager.searchBooks(key).forEach(b ->
-                            System.out.println(
-                                    b.getId() + " | " + b.getTitle()
-                            )
-                    );
+                    manager.searchBooks(key)
+                            .forEach(System.out::println);
                 }
 
-                case 7 -> members.forEach(m ->
-                        System.out.println(
-                                m.getID() + " | " +
-                                m.getName() +
-                                (m instanceof StudentMember ? " (Student)" : "")
-                        )
-                );
+                case 7 -> UserDAO.getAllMembers()
+                        .forEach(System.out::println);
 
                 case 8 -> running = false;
             }
@@ -214,7 +187,7 @@ public class Main {
     // =====================================================
     // USER MENU
     // =====================================================
-    public static void userMenu(Scanner sc) {
+    public static void userMenu(Scanner sc, User user) {
 
         boolean running = true;
 
@@ -234,59 +207,26 @@ public class Main {
                 case 1 -> {
                     System.out.print("Keyword: ");
                     String key = sc.nextLine();
-                    manager.searchBooks(key).forEach(b ->
-                            System.out.println(
-                                    b.getId() + " | " + b.getTitle()
-                            )
-                    );
+                    manager.searchBooks(key)
+                            .forEach(System.out::println);
                 }
 
-                case 2 -> {
-                    System.out.print("Book ID: ");
-                    int bid = sc.nextInt();
-                    sc.nextLine();
-
-                    System.out.print("Member ID: ");
-                    String mid = sc.nextLine();
-
-                    Member m = members.stream()
-                            .filter(mem -> mem.getID().equals(mid))
-                            .findFirst()
-                            .orElse(null);
-
-                    System.out.println(
-                            m != null && manager.borrowBook(bid, m)
-                                    ? "Book borrowed."
-                                    : "Borrow failed."
-                    );
-                }
-
-                case 3 -> {
-                    System.out.print("Book ID: ");
-                    int id = sc.nextInt();
-                    sc.nextLine();
-
-                    System.out.println(
-                            manager.returnBook(id)
-                                    ? "Book returned."
-                                    : "Return failed."
-                    );
-                }
-
+                case 2 -> running = false;
+                case 3 -> running = false;
                 case 4 -> running = false;
             }
         }
     }
 
     // =====================================================
-    // RANDOM UNIQUE 5 DIGIT BOOK ID
+    // RANDOM UNIQUE BOOK ID
     // =====================================================
     public static int generateUniqueBookId() {
         int id;
         do {
             id = 10000 + random.nextInt(90000);
         } while (BookDAO.bookIdExists(id));
-
         return id;
     }
+    
 }

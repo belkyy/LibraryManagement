@@ -8,7 +8,7 @@ public class LibraryManager {
     private final List<Loaning> loans = new ArrayList<>();
 
     // -------------------------
-    // ADD BOOK (ADMIN)
+    // ADD BOOK (RAM)
     // -------------------------
     public void addBook(Book b) {
         if (b == null) return;
@@ -16,20 +16,18 @@ public class LibraryManager {
     }
 
     // -------------------------
-    // REMOVE BOOK (ADMIN)
+    // REMOVE BOOK (RAM ONLY)
+    // DB silme BookDAO'da yapılır
     // -------------------------
-    public boolean removeBook(int id) {
+    public boolean removeBookFromMemory(int id) {
 
-        // Ödünçte mi kontrolü
         boolean isLoaned = loans.stream()
                 .anyMatch(l ->
-                        l.getBook().getId() == id
-                        && l.getReturnDate() == null
+                        l.getBook().getId() == id &&
+                        l.getReturnDate() == null
                 );
 
-        if (isLoaned) {
-            return false; // ödünçteyse silinemez
-        }
+        if (isLoaned) return false;
 
         return books.removeIf(b -> b.getId() == id);
     }
@@ -61,20 +59,14 @@ public class LibraryManager {
     }
 
     // -------------------------
-    // BORROW BOOK (USER)
+    // BORROW BOOK
     // -------------------------
     public boolean borrowBook(int bookId, Member member) {
 
         if (member == null) return false;
 
         for (Book b : books) {
-
-            if (b.getId() == bookId) {
-
-                if (!b.isAvailable()) {
-                    return false;
-                }
-
+            if (b.getId() == bookId && b.isAvailable()) {
                 b.setAvailable(false);
                 loans.add(new Loaning(b, member));
                 return true;
@@ -84,14 +76,13 @@ public class LibraryManager {
     }
 
     // -------------------------
-    // RETURN BOOK (USER)
+    // RETURN BOOK
     // -------------------------
     public boolean returnBook(int bookId) {
 
         for (Loaning loan : loans) {
-
-            if (loan.getBook().getId() == bookId
-                    && loan.getReturnDate() == null) {
+            if (loan.getBook().getId() == bookId &&
+                loan.getReturnDate() == null) {
 
                 loan.returnBook();
                 loan.getBook().setAvailable(true);
@@ -102,7 +93,7 @@ public class LibraryManager {
     }
 
     // -------------------------
-    // LOAD FROM DATABASE
+    // LOAD BOOKS FROM DATABASE
     // -------------------------
     public void loadBooksFromDB() {
         books.clear();
