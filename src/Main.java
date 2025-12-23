@@ -1,6 +1,7 @@
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.List;
 
 public class Main {
 
@@ -33,18 +34,27 @@ public class Main {
             sc.nextLine();
 
             switch (choice) {
-                case 1 -> {
-                    System.out.print("Username: ");
-                    String u = sc.nextLine();
-                    System.out.print("Password: ");
-                    String p = sc.nextLine();
+            case 1 -> {
+                System.out.print("Username: ");
+                String u = sc.nextLine();
 
-                    System.out.println(
-                        UserDAO.signUp(u, p)
-                            ? "Sign up successful!"
-                            : "Username already exists!"
-                    );
-                }
+                System.out.print("Password: ");
+                String p = sc.nextLine();
+
+                System.out.print("Are you a student? (yes/no): ");
+                String ans = sc.nextLine();
+
+                boolean isStudent = ans.equalsIgnoreCase("yes");
+
+                boolean ok = UserDAO.signUp(u, p, isStudent);
+
+                System.out.println(
+                    ok
+                        ? "Sign up successful!"
+                        : "Username already exists!"
+                );
+            }
+
 
                 case 2 -> {
                     System.out.print("Username: ");
@@ -145,29 +155,66 @@ public class Main {
                     }
                 }
 
-                case 3 -> {
-                	System.out.print("Username: ");
-                    String u = sc.nextLine();
-                    System.out.print("Password: ");
-                    String p = sc.nextLine();
+                case 3 -> { // ADMIN - ADD MEMBER
 
-                    boolean ok = UserDAO.addMember(u, p, false);
-                    System.out.println(ok ? "Member added ✅" : "Failed ❌");
-                }
-
-                case 4 -> {
                     System.out.print("Username: ");
                     String u = sc.nextLine();
 
+                    System.out.print("Password: ");
+                    String p = sc.nextLine();
+
+                    System.out.print("Is student? (yes/no): ");
+                    String ans = sc.nextLine();
+
+                    boolean isStudent = ans.equalsIgnoreCase("yes");
+
+                    boolean ok = UserDAO.addMember(u, p, isStudent);
+
                     System.out.println(
-                        UserDAO.removeMember(u)
-                            ? "User removed."
-                            : "Remove failed."
+                        ok
+                            ? "Member added successfully!"
+                            : "User already exists!"
                     );
                 }
 
-                case 5 -> manager.showAllBooks()
-                        .forEach(System.out::println);
+                case 4 -> { 
+
+                    System.out.print("Username to remove: ");
+                    String username = sc.nextLine();
+
+                    System.out.print("Are you sure you want to delete this user? (yes/no): ");
+                    String confirm = sc.nextLine();
+
+                    if (!confirm.equalsIgnoreCase("yes")) {
+                        System.out.println("Operation cancelled.");
+                        break;
+                    }
+
+                    boolean ok = UserDAO.removeMember(username);
+
+                    System.out.println(
+                        ok
+                            ? "Member removed successfully!"
+                            : "User not found or cannot remove admin!"
+                    );
+                }
+
+
+
+                case 5 -> {
+                    List<User> members = UserDAO.getAllMembers();
+
+                    System.out.println("Total members: " + members.size());
+
+                    for (User u : members) {
+                        System.out.println(
+                            u.getUsername() +
+                            (u.isStudent() ? " (Student)" : " (Normal)") +
+                            " [" + u.getRole() + "]"
+                        );
+                    }
+                }
+
 
                 case 6 -> {
                     System.out.print("Keyword: ");

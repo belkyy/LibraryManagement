@@ -37,7 +37,7 @@ public class UserDAO {
         return null;
     }
 
-    public static boolean signUp(String username, String password) {
+    public static boolean signUp(String username, String password, boolean isStudent) {
 
         String sql =
             "INSERT INTO users (username, password, role, is_student) " +
@@ -46,11 +46,12 @@ public class UserDAO {
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            User u = User.createNew(username, password, "USER", false);
+            User u = User.createNew(username, password, "USER", isStudent);
 
             ps.setString(1, u.getUsername());
             ps.setString(2, u.getPasswordHash());
-
+            ps.setBoolean(3, isStudent);
+            
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
