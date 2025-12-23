@@ -4,9 +4,6 @@ import java.util.List;
 
 public class BookDAO {
 
-    // -------------------------
-    // ADD BOOK (ADMIN)
-    // -------------------------
     public static boolean addBook(Book book) {
 
         String sql =
@@ -29,9 +26,6 @@ public class BookDAO {
         }
     }
 
-    // -------------------------
-    // GET ALL BOOKS
-    // -------------------------
     public static List<Book> getAllBooks() {
 
         List<Book> books = new ArrayList<>();
@@ -58,9 +52,6 @@ public class BookDAO {
         return books;
     }
 
-    // -------------------------
-    // CHECK BOOK ID EXISTS
-    // -------------------------
     public static boolean bookIdExists(int id) {
 
         String sql = "SELECT id FROM books WHERE id = ?";
@@ -78,9 +69,6 @@ public class BookDAO {
         return false;
     }
 
-    // -------------------------
-    // REMOVE BOOK (ADMIN)
-    // -------------------------
     public static boolean removeBook(int bookId) {
 
         String checkSql =

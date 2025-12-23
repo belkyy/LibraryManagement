@@ -7,18 +7,11 @@ public class LibraryManager {
     private final List<Book> books = new ArrayList<>();
     private final List<Loaning> loans = new ArrayList<>();
 
-    // -------------------------
-    // ADD BOOK (RAM)
-    // -------------------------
     public void addBook(Book b) {
         if (b == null) return;
         books.add(b);
     }
 
-    // -------------------------
-    // REMOVE BOOK (RAM ONLY)
-    // DB silme BookDAO'da yapılır
-    // -------------------------
     public boolean removeBookFromMemory(int id) {
 
         boolean isLoaned = loans.stream()
@@ -32,16 +25,10 @@ public class LibraryManager {
         return books.removeIf(b -> b.getId() == id);
     }
 
-    // -------------------------
-    // SHOW ALL BOOKS
-    // -------------------------
     public List<Book> showAllBooks() {
         return Collections.unmodifiableList(books);
     }
 
-    // -------------------------
-    // SEARCH BOOK
-    // -------------------------
     public List<Book> searchBooks(String key) {
 
         if (key == null || key.isEmpty())
@@ -58,9 +45,6 @@ public class LibraryManager {
         return Collections.unmodifiableList(result);
     }
 
-    // -------------------------
-    // BORROW BOOK
-    // -------------------------
     public boolean borrowBook(int bookId, Member member) {
 
         if (member == null) return false;
@@ -75,9 +59,6 @@ public class LibraryManager {
         return false;
     }
 
-    // -------------------------
-    // RETURN BOOK
-    // -------------------------
     public boolean returnBook(int bookId) {
 
         for (Loaning loan : loans) {
@@ -92,9 +73,6 @@ public class LibraryManager {
         return false;
     }
 
-    // -------------------------
-    // LOAD BOOKS FROM DATABASE
-    // -------------------------
     public void loadBooksFromDB() {
         books.clear();
         books.addAll(BookDAO.getAllBooks());

@@ -36,10 +36,6 @@ public class Loaning {
         return returnDate;
     }
 
-    /** 
-     * Returns true if successfully returned,
-     * false if it was already returned before.
-     */
     public boolean returnBook() {
         if (returnDate != null) {
             return false; // already returned

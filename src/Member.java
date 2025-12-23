@@ -24,7 +24,7 @@ public class Member {
     }
 
     public double calculateFee(int lateDays) {
-        if (lateDays < 0) lateDays = 0;  // negatif gecikme gününe izin verme
+        if (lateDays < 0) lateDays = 0;  // negatif olamz
         return lateDays * 2.0;
     }
 

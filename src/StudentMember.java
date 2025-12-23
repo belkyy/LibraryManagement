@@ -6,8 +6,8 @@ public class StudentMember extends Member {
 
     @Override
     public double calculateFee(int lateDays) {
-        if (lateDays < 0) lateDays = 0;  // negatif gecikmeyi engelle
-        return lateDays * 1.0; // öğrenci için indirimli ücret
+        if (lateDays < 0) lateDays = 0;  // negatif olmz
+        return lateDays * 1.0; // student discount.
     }
 
     @Override

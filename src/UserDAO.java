@@ -3,10 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-
-    // =========================
-    // LOGIN
-    // =========================
     public static User login(String username, String password) {
 
         String sql =
@@ -29,7 +25,6 @@ public class UserDAO {
 
                 user.setStudent(rs.getBoolean("is_student"));
 
-                // 🔐 Java tarafında parola kontrolü
                 if (user.checkPassword(password)) {
                     return user;
                 }
@@ -42,9 +37,6 @@ public class UserDAO {
         return null;
     }
 
-    // =========================
-    // SIGN UP (USER)
-    // =========================
     public static boolean signUp(String username, String password) {
 
         String sql =
@@ -66,9 +58,6 @@ public class UserDAO {
         }
     }
 
-    // =========================
-    // ADD MEMBER (ADMIN)
-    // =========================
     public static boolean addMember(
             String username,
             String password,
@@ -95,9 +84,6 @@ public class UserDAO {
         }
     }
 
-    // =========================
-    // REMOVE MEMBER (ADMIN)
-    // =========================
     public static boolean removeMember(String username) {
 
         String sql =
@@ -114,9 +100,6 @@ public class UserDAO {
         }
     }
 
-    // =========================
-    // GET ALL MEMBERS (ADMIN)
-    // =========================
     public static List<User> getAllMembers() {
 
         List<User> users = new ArrayList<>();

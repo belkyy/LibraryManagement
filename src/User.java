@@ -5,11 +5,10 @@ import java.nio.charset.StandardCharsets;
 public class User {
 
     private final String username;
-    private final String passwordHash; // DB'deki hash
+    private final String passwordHash; 
     private final String role;          // ADMIN / USER
-    private boolean student;            // 🔥 final KALDIRILDI
+    private boolean student;          
 
-    // 🔹 DB'den okurken kullanılır
     public User(String username, String passwordHash, String role) {
         if (username == null || username.isEmpty())
             throw new IllegalArgumentException("Username cannot be empty");
@@ -20,7 +19,6 @@ public class User {
         this.student = false; // default
     }
 
-    // 🔹 Yeni kullanıcı oluştururken (SIGN UP / ADD MEMBER)
     public static User createNew(
             String username,
             String plainPassword,
@@ -32,9 +30,6 @@ public class User {
         return u;
     }
 
-    // =========================
-    // GETTERS / SETTERS
-    // =========================
     public String getUsername() {
         return username;
     }
@@ -57,14 +52,12 @@ public class User {
         return passwordHash.equals(hash(inputPassword));
     }
 
-    // DAO için hash getter (reflection yok!)
+    // DAO için hash getter 
     String getPasswordHash() {
         return passwordHash;
     }
 
-    // =========================
-    // HASH
-    // =========================
+
     private static String hash(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

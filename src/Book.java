@@ -9,7 +9,6 @@ public class Book implements Seperable {
 
     public Book(int id, String title, String author) {
 
-        // ID kontrolü (5 haneli pozitif sayı istiyoruz)
         if (id < 10000 || id > 99999) {
             throw new IllegalArgumentException(
                 "Book ID must be a 5-digit positive number"
@@ -21,9 +20,6 @@ public class Book implements Seperable {
         this.author = author != null ? author : "";
     }
 
-    // -------------------------
-    // GETTERS
-    // -------------------------
     public int getId() {
         return id;
     }
@@ -40,16 +36,10 @@ public class Book implements Seperable {
         return available;
     }
 
-    // -------------------------
-    // SETTERS
-    // -------------------------
     public void setAvailable(boolean available) {
         this.available = available;
     }
 
-    // -------------------------
-    // SEARCH SUPPORT
-    // -------------------------
     @Override
     public boolean matches(String key) {
         if (key == null || key.isEmpty()) return false;
@@ -60,9 +50,6 @@ public class Book implements Seperable {
                 || author.toLowerCase(Locale.ROOT).contains(lowerKey);
     }
 
-    // -------------------------
-    // TO STRING
-    // -------------------------
     @Override
     public String toString() {
         return "Book{" +
