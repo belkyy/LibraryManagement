@@ -202,17 +202,7 @@ public class Main {
 
 
                 case 5 -> {
-                    List<User> members = UserDAO.getAllMembers();
-
-                    System.out.println("Total members: " + members.size());
-
-                    for (User u : members) {
-                        System.out.println(
-                            u.getUsername() +
-                            (u.isStudent() ? " (Student)" : " (Normal)") +
-                            " [" + u.getRole() + "]"
-                        );
-                    }
+                	manager.showBooksAdmin();
                 }
 
 
@@ -223,9 +213,29 @@ public class Main {
                             .forEach(System.out::println);
                 }
 
-                case 7 -> UserDAO.getAllMembers()
-                        .forEach(System.out::println);
+                case 7 -> {
+                    List<User> users = UserDAO.getAllMembers();
 
+                    System.out.println("\n======= USERS =======");
+
+                    if (users.isEmpty()) {
+                        System.out.println("No users found.");
+                    } else {
+                        for (User u : users) {
+                            System.out.println(
+                                "- " + u.getUsername() +
+                                " [" + u.getRole() + "] " +
+                                (u.isStudent() ? " (Student)" : "")
+                            );
+                        }
+                    }
+
+                    System.out.println("=====================");
+                    System.out.println("Total user count = " + users.size());
+                }
+
+
+                
                 case 8 -> running = false;
             }
         }

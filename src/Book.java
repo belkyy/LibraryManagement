@@ -39,6 +39,11 @@ public class Book implements Seperable {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+    
+    public String toAdminString() {
+        return title + " - " + author + " - " + id + " - " +
+               (available ? "Available" : "Unavailable");
+    }
 
     @Override
     public boolean matches(String key) {

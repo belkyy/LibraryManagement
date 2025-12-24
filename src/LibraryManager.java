@@ -25,9 +25,23 @@ public class LibraryManager {
         return books.removeIf(b -> b.getId() == id);
     }
 
-    public List<Book> showAllBooks() {
-        return Collections.unmodifiableList(books);
+    public void showBooksAdmin() {
+
+        if (books.isEmpty()) {
+            System.out.println("No books in library.");
+            return;
+        }
+
+        System.out.println("============ BOOK LIST ============");
+
+        for (Book b : books) {
+            System.out.println(b.toAdminString());
+        }
+
+        System.out.println("===================================");
+        System.out.println("Total books: " + books.size());
     }
+
 
     public List<Book> searchBooks(String key) {
 
