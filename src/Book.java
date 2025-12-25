@@ -1,6 +1,6 @@
 import java.util.Locale;
 
-public class Book implements Seperable {
+public class Book {
 
     private final int id;
     private final String title;
@@ -47,7 +47,6 @@ public class Book implements Seperable {
                (available ? "Available" : "Unavailable");
     }
 
-    @Override
     public boolean matches(String key) {
         if (key == null || key.isEmpty()) return false;
 
