@@ -105,4 +105,50 @@ public class BookDAO {
             return false;
         }
     }
+    
+    public static boolean borrowBookByTitle(String title) {
+
+        String sql =
+            "UPDATE books b " +
+            "JOIN (" +
+            "   SELECT id FROM books " +
+            "   WHERE title = ? AND available = 1 " +
+            "   LIMIT 1" +
+            ") x ON b.id = x.id " +
+            "SET b.available = 0";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, title);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean returnBookByTitle(String title) {
+
+        String sql =
+            "UPDATE books b " +
+            "JOIN (" +
+            "   SELECT id FROM books " +
+            "   WHERE LOWER(title) = LOWER(?) AND available = 0 " +
+            "   LIMIT 1" +
+            ") x ON b.id = x.id " +
+            "SET b.available = 1";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, title);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

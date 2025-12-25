@@ -59,33 +59,35 @@ public class LibraryManager {
         return Collections.unmodifiableList(result);
     }
 
-    public boolean borrowBook(int bookId, Member member) {
+    public boolean borrowBook(String title) {
 
-        if (member == null) return false;
+        if (title == null || title.isEmpty())
+            return false;
 
-        for (Book b : books) {
-            if (b.getId() == bookId && b.isAvailable()) {
-                b.setAvailable(false);
-                loans.add(new Loaning(b, member));
-                return true;
-            }
+        boolean ok = BookDAO.borrowBookByTitle(title);
+
+        if (ok) {
+            loadBooksFromDB();
         }
-        return false;
+
+        return ok;
     }
 
-    public boolean returnBook(int bookId) {
 
-        for (Loaning loan : loans) {
-            if (loan.getBook().getId() == bookId &&
-                loan.getReturnDate() == null) {
+    public boolean returnBook(String title) {
 
-                loan.returnBook();
-                loan.getBook().setAvailable(true);
-                return true;
-            }
+        if (title == null || title.isEmpty())
+            return false;
+
+        boolean ok = BookDAO.returnBookByTitle(title);
+
+        if (ok) {
+            loadBooksFromDB();
         }
-        return false;
+
+        return ok;
     }
+
 
     public void loadBooksFromDB() {
         books.clear();

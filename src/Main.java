@@ -268,8 +268,28 @@ public class Main {
                             .forEach(System.out::println);
                 }
 
-                case 2 -> running = false;
-                case 3 -> running = false;
+                case 2 -> {
+                    System.out.print("Book title: ");
+                    String title = sc.nextLine();
+
+                    System.out.println(
+                        manager.borrowBook(title)
+                            ? "Book borrowed successfully."
+                            : "Book not available."
+                    );
+                }
+                
+                case 3 -> {
+                    System.out.print("Book title: ");
+                    String title = sc.nextLine();
+
+                    System.out.println(
+                        manager.returnBook(title)
+                            ? "Book returned."
+                            : "Return failed."
+                    );
+                }
+
                 case 4 -> running = false;
             }
         }
