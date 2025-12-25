@@ -151,4 +151,53 @@ public class BookDAO {
             return false;
         }
     }
+    
+    public static List<Book> getAvailableBooks() {
+
+        List<Book> books = new ArrayList<>();
+
+        String sql =
+            "SELECT id, title, author " +
+            "FROM books WHERE available = 1 " +
+            "ORDER BY title";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                books.add(
+                    new Book(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("author")
+                    )
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return books;
+    }
+
+    public static boolean isBookBorrowed(int bookId) {
+
+        String sql =
+            "SELECT 1 FROM loans " +
+            "WHERE book_id=? AND return_date IS NULL";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, bookId);
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next(); // varsa → borrowed
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
 }

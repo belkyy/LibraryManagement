@@ -18,7 +18,9 @@ public class Book implements Seperable {
         this.id = id;
         this.title = title != null ? title : "";
         this.author = author != null ? author : "";
+
     }
+
 
     public int getId() {
         return id;

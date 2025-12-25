@@ -12,19 +12,6 @@ public class LibraryManager {
         books.add(b);
     }
 
-    public boolean removeBookFromMemory(int id) {
-
-        boolean isLoaned = loans.stream()
-                .anyMatch(l ->
-                        l.getBook().getId() == id &&
-                        l.getReturnDate() == null
-                );
-
-        if (isLoaned) return false;
-
-        return books.removeIf(b -> b.getId() == id);
-    }
-
     public void showBooksAdmin() {
 
         if (books.isEmpty()) {
@@ -86,6 +73,10 @@ public class LibraryManager {
         }
 
         return ok;
+    }
+    
+    public List<Book> getAvailableBooks() {
+        return BookDAO.getAvailableBooks();
     }
 
 

@@ -269,7 +269,24 @@ public class Main {
                 }
 
                 case 2 -> {
-                    System.out.print("Book title: ");
+
+                    List<Book> books = manager.getAvailableBooks();
+
+                    if (books.isEmpty()) {
+                        System.out.println("No available books.");
+                        break;
+                    }
+
+                    System.out.println("============= AVAILABLE BOOKS =============");
+                    books.forEach(b ->
+                        System.out.println(
+                            b.getTitle() + " - " +
+                            b.getAuthor()
+                        )
+                    );
+                    System.out.println("===========================================");
+
+                    System.out.print("Enter book title to borrow: ");
                     String title = sc.nextLine();
 
                     System.out.println(
@@ -278,6 +295,7 @@ public class Main {
                             : "Book not available."
                     );
                 }
+
                 
                 case 3 -> {
                     System.out.print("Book title: ");

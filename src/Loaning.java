@@ -1,56 +1,31 @@
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 public class Loaning {
 
-    private final Book book;
-    private final Member member;
-    private final LocalDate borrowDate;
-    private LocalDate returnDate;
+    private int bookId;
+    private String bookTitle;
+    private String username;
+    private Timestamp borrowDate;
+    private Timestamp returnDate;
 
-    public Loaning(Book book, Member member) {
-        if (book == null) {
-            throw new IllegalArgumentException("Book cannot be null");
-        }
-        if (member == null) {
-            throw new IllegalArgumentException("Member cannot be null");
-        }
-
-        this.book = book;
-        this.member = member;
-        this.borrowDate = LocalDate.now();
+    public Loaning(int bookId, String bookTitle, String username,
+                Timestamp borrowDate, Timestamp returnDate) {
+        this.bookId = bookId;
+        this.bookTitle = bookTitle;
+        this.username = username;
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
     }
 
-    public Book getBook() {
-        return book;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public LocalDate getBorrowDate() {
-        return borrowDate;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public boolean returnBook() {
-        if (returnDate != null) {
-            return false; // already returned
-        }
-        this.returnDate = LocalDate.now();
-        return true;
+    public boolean isReturned() {
+        return returnDate != null;
     }
 
     @Override
     public String toString() {
-        return "Loaning{" +
-                "book=" + book.getTitle() +
-                ", member=" + member.getName() +
-                ", borrowDate=" + borrowDate +
-                ", returnDate=" + returnDate +
-                '}';
+        return bookTitle +
+               " | User: " + username +
+               " | Borrowed: " + borrowDate +
+               " | " + (isReturned() ? "Returned" : "Still Borrowed");
     }
 }
