@@ -136,4 +136,35 @@ public class LoanDAO {
 
 	    return list;
 	}
+	public static List<Loaning> getActiveLoans(String username) {
+
+	    List<Loaning> list = new ArrayList<>();
+
+	    String sql =
+	        "SELECT b.id, b.title, l.borrow_date " +
+	        "FROM loans l JOIN books b ON l.book_id=b.id " +
+	        "WHERE l.username=? AND l.return_date IS NULL";
+
+	    try (Connection con = DBConnection.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, username);
+	        ResultSet rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            list.add(new Loaning(
+	                rs.getInt("id"),
+	                rs.getString("title"),
+	                username,
+	                rs.getTimestamp("borrow_date"),
+	                null
+	            ));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return list;
+	}
+
 }

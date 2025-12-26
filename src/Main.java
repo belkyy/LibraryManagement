@@ -1,3 +1,6 @@
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -269,53 +272,83 @@ public class Main {
                 }
 
                 case 2 -> {
+                    List<Book> availableBooks = BookDAO.getAvailableBooks();
 
-                    List<Book> books = manager.getAvailableBooks();
-
-                    if (books.isEmpty()) {
-                        System.out.println("No available books.");
+                    if (availableBooks.isEmpty()) {
+                        System.out.println("No available books at the moment.");
                         break;
                     }
 
-                    System.out.println("============= AVAILABLE BOOKS =============");
-                    books.forEach(b ->
+                    System.out.println("\n========= AVAILABLE BOOKS =========");
+                    for (Book b : availableBooks) {
                         System.out.println(
-                            b.getTitle() + " - " +
-                            b.getAuthor()
-                        )
-                    );
-                    System.out.println("===========================================");
+                            b.getId() + " - " + b.getTitle() + " (" + b.getAuthor() + ")"
+                        );
+                    }
 
-                    System.out.print("Enter book title to borrow: ");
-                    String title = sc.nextLine();
+                    System.out.print("\nEnter Book ID to borrow: ");
+                    int bookId = sc.nextInt();
+                    sc.nextLine(); 
 
-                    System.out.println(
-                        manager.borrowBook(title)
-                            ? "Book borrowed successfully."
-                            : "Book not available."
-                    );
+                    boolean success = LoanDAO.borrowBook(bookId, user.getUsername());
+
+                    if (success) {
+                        System.out.println("Book borrowed successfully!");
+                    } else {
+                        System.out.println("Borrow failed. Book may already be borrowed or You entered a wrong ID.");
+                    }
+
+                    break;
+                }
+           
+                case 3 -> { 
+
+                    while (true) {
+
+                        List<Loaning> myLoans =
+                            LoanDAO.getActiveLoans(user.getUsername());
+
+                        if (myLoans.isEmpty()) {
+                            System.out.println("You have no borrowed books.");
+                            break;
+                        }
+
+                        System.out.println("\n========= YOUR BORROWED BOOKS =========");
+                        for (Loaning l : myLoans) {
+                        	System.out.println(
+                        		    l.getBookId() + " - " +
+                        		    l.getBookTitle() +
+                        		    " | Borrowed: " +
+                        		    l.getBorrowDate()
+                        		);
+                        }
+
+                        System.out.print("\nEnter BOOK ID to return: ");
+                        int bookId = Integer.parseInt(sc.nextLine());
+
+                        boolean success =
+                            LoanDAO.returnBook(bookId, user.getUsername());
+
+                        System.out.println(
+                            success ? "Book returned successfully."
+                                    : "Return failed."
+                        );
+
+                        System.out.print("\nReturn another book? (yes/no): ");
+                        String ans = sc.nextLine();
+
+                        if (!ans.equalsIgnoreCase("yes")) {
+                            break;
+                        }
+                    }
                 }
 
-                
-                case 3 -> {
-                    System.out.print("Book title: ");
-                    String title = sc.nextLine();
-
-                    System.out.println(
-                        manager.returnBook(title)
-                            ? "Book returned."
-                            : "Return failed."
-                    );
-                }
 
                 case 4 -> running = false;
             }
         }
     }
-
-    // =====================================================
-    // RANDOM UNIQUE BOOK ID
-    // =====================================================
+    
     public static int generateUniqueBookId() {
         int id;
         do {

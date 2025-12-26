@@ -7,6 +7,7 @@ public class Loaning {
     private String username;
     private Timestamp borrowDate;
     private Timestamp returnDate;
+    
 
     public Loaning(int bookId, String bookTitle, String username,
                 Timestamp borrowDate, Timestamp returnDate) {
@@ -16,7 +17,18 @@ public class Loaning {
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
     }
+    
+    public int getBookId() {
+        return bookId;
+    }
 
+    public String getBookTitle() {
+        return bookTitle;
+    }
+
+    public Timestamp getBorrowDate() {
+        return borrowDate;
+    }
     public boolean isReturned() {
         return returnDate != null;
     }
@@ -28,4 +40,6 @@ public class Loaning {
                " | Borrowed: " + borrowDate +
                " | " + (isReturned() ? "Returned" : "Still Borrowed");
     }
+
+    
 }
