@@ -98,7 +98,6 @@ public class Main {
     // ADMIN MENU
     // =====================================================
     public static void adminMenu(Scanner sc) {
-
         boolean running = true;
 
         while (running) {
@@ -108,9 +107,10 @@ public class Main {
             System.out.println("3) Add User");
             System.out.println("4) Remove User");
             System.out.println("5) Show Books");
-            System.out.println("6) Search Book");
-            System.out.println("7) Show Users");
-            System.out.println("8) Exit");
+            System.out.println("6) Show Borrowed Books");
+            System.out.println("7) Search Book");
+            System.out.println("8) Show Users");
+            System.out.println("9) Exit");
             System.out.print("Choose: ");
 
             int option = sc.nextInt();
@@ -207,16 +207,19 @@ public class Main {
                 case 5 -> {
                 	manager.showBooksAdmin();
                 }
+                case 6-> {
+                    LoanDAO.getBorrowedBooksAdmin();
+                    break;
+                }
 
-
-                case 6 -> {
+                case 7 -> {
                     System.out.print("Keyword: ");
                     String key = sc.nextLine();
                     manager.searchBooks(key)
                             .forEach(System.out::println);
                 }
 
-                case 7 -> {
+                case 8 -> {
                     List<User> users = UserDAO.getAllMembers();
 
                     System.out.println("\n======= USERS =======");
@@ -239,7 +242,7 @@ public class Main {
 
 
                 
-                case 8 -> running = false;
+                case 9 -> running = false;
             }
         }
     }
@@ -256,7 +259,8 @@ public class Main {
             System.out.println("1) Search Book");
             System.out.println("2) Borrow Book");
             System.out.println("3) Return Book");
-            System.out.println("4) Exit");
+            System.out.println("4) View % Pay Fees");
+            System.out.println("5) Exit");
             System.out.print("Choose: ");
 
             int option = sc.nextInt();
@@ -342,9 +346,26 @@ public class Main {
                         }
                     }
                 }
+                case 4 -> {
 
+                    boolean hasDebt = LoanDAO.showUserFees(user.getUsername());
 
-                case 4 -> running = false;
+                    if (!hasDebt) {
+                        break; // 
+                    }
+
+                    System.out.print("Enter Fee ID to pay: ");
+                    int feeId = sc.nextInt();
+                    sc.nextLine();
+
+                    if (LoanDAO.payFee(feeId)) {
+                        System.out.println("Fee paid successfully.");
+                    } else {
+                        System.out.println("Payment failed.");
+                    }
+                }
+
+                case 5 -> running = false;
             }
         }
     }
