@@ -40,23 +40,25 @@ public class UserDAO {
     public static boolean signUp(String username, String password, boolean isStudent) {
 
         String sql =
-            "INSERT INTO users (username, password, role, is_student) " +
-            "VALUES (?, ?, 'USER', false)";
+        	    "INSERT INTO users (username, password, role, is_student) " +
+        	    	    "VALUES (?, ?, ?, ?)"; 
 
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        	    	try (Connection con = DBConnection.getConnection();
+        	    	     PreparedStatement ps = con.prepareStatement(sql)) {
 
-            User u = User.createNew(username, password, "USER", isStudent);
+        	    	    User u = User.createNew(username, password, "USER", isStudent);
 
-            ps.setString(1, u.getUsername());
-            ps.setString(2, u.getPasswordHash());
-            ps.setBoolean(3, isStudent);
-            
-            return ps.executeUpdate() > 0;
+        	    	    ps.setString(1, u.getUsername());
+        	    	    ps.setString(2, u.getPasswordHash());
+        	    	    ps.setString(3, u.getRole());      // 'USER'
+        	    	    ps.setBoolean(4, u.isStudent());   // student durumu
 
-        } catch (SQLException e) {
-            return false; // username unique ihlali
-        }
+        	    	    return ps.executeUpdate() > 0;
+
+        	    	} catch (SQLException e) {
+        	    	    e.printStackTrace(); 
+        	    	    return false;
+        	    	}
     }
 
     public static boolean addMember(
