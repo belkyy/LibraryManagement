@@ -49,6 +49,7 @@ public class LoanDAO {
 	        int fee = calculateLateFee(bookId, username);
 
 	        if (fee > 0) {
+	        	createFee(username, bookId, fee);
 	            System.out.println(
 	                "Late fee exists: " + fee + " TL. Please pay before returning the book."
 	            );
