@@ -56,6 +56,8 @@ Main tables;
 -loans
 -fees
 
-fees
 
-Case-insensitive usernames & titles using:
+👨‍💻 Author
+Developed by Mert Muhammed Çapkın
+-ISTANBUL AREL UNIVERSITY (Computer Engineering)
+Course project – Library Management System
