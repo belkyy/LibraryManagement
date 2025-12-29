@@ -200,4 +200,30 @@ public class BookDAO {
             return false;
         }
     }
+    
+    public static Book getBookById(int id) {
+
+        String sql = "SELECT * FROM books WHERE id=?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Book(
+                		rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("author")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
