@@ -17,17 +17,18 @@ public class Main {
         // LOGIN / SIGN UP
         // ===============================
         while (currentUser == null) {
-            System.out.println("\n=== LOGIN MENU ===");
+            System.out.println("\n======= LOGIN MENU =======");
             System.out.println("1) Sign Up");
             System.out.println("2) Login");
             System.out.println("3) Exit");
+            System.out.println("==========================");
             System.out.print("Choose: ");
 
             int choice;
             try {
                 choice = sc.nextInt();
             } catch (InputMismatchException e) {
-                System.out.println("Enter a valid number!");
+                System.out.println("Please, Enter a valid number!");
                 sc.nextLine();
                 continue;
             }
@@ -79,7 +80,7 @@ public class Main {
                 }
 
                 case 3 -> {
-                    System.out.println("Goodbye!");
+                    System.out.println("Goodbye, Thanks for visiting!");
                     sc.close();
                     System.exit(0);
                 }
@@ -110,7 +111,7 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n===== ADMIN MENU =====");
+            System.out.println("\n=========== ADMIN MENU ===========");
             System.out.println("1) Add Book");
             System.out.println("2) Remove Book");
             System.out.println("3) Add User");
@@ -120,6 +121,7 @@ public class Main {
             System.out.println("7) Search Book");
             System.out.println("8) Show Users");
             System.out.println("9) Exit");
+            System.out.println("==================================");
             System.out.print("Choose: ");
 
             int option;
@@ -238,13 +240,13 @@ public class Main {
                     if (users.isEmpty()) {
                         System.out.println("No users found.");
                     } else {
-                        System.out.println("\n======= USERS =======");
+                        System.out.println("\n======== USERS ========");
                         for (User u : users) {
                             System.out.println("- " + u.getUsername() +
                                     " [" + u.getRole() + "]" +
                                     (u.isStudent() ? " (Student)" : ""));
                         }
-                        System.out.println("=====================");
+                        System.out.println("=======================");
                         System.out.println("Total user count = " + users.size());
                     }
                 }
@@ -263,12 +265,13 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n===== USER MENU =====");
+            System.out.println("\n=========== USER MENU ===========");
             System.out.println("1) Search Book");
             System.out.println("2) Borrow Book");
             System.out.println("3) Return Book");
             System.out.println("4) View / Pay Fees");
             System.out.println("5) Exit");
+            System.out.println("=================================");
             System.out.print("Choose: ");
 
             int option;
