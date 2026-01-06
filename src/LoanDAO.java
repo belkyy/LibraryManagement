@@ -331,4 +331,13 @@ public class LoanDAO {
 	    }
 	    return false;
 	}
+	
+	public static int getEstimatedLateFee(int bookId, String username) {
+
+	    try {
+	        return calculateLateFee(bookId, username);
+	    } catch (SQLException e) {
+	        return 0;
+	    }
+	}
 }

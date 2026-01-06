@@ -354,23 +354,40 @@ public class Main {
                 }
 
                 case 4 -> {
-                    if (!LoanDAO.showUserFees(user.getUsername())) {
+
+                    List<Loaning> activeLoans =
+                        LoanDAO.getActiveLoans(user.getUsername());
+
+                    if (activeLoans.isEmpty()) {
+                        System.out.println("You have no borrowed books.");
                         break;
                     }
 
-                    System.out.print("Enter Fee ID to pay: ");
-                    try {
-                        int feeId = sc.nextInt();
-                        sc.nextLine();
-                        if (LoanDAO.payFee(feeId)) {
-                            System.out.println("Fee paid successfully.");
-                        } else {
-                            System.out.println("Payment failed.");
+                    boolean hasLateFee = false;
+
+                    System.out.println("\n====== ESTIMATED LATE FEES ======");
+
+                    for (Loaning l : activeLoans) {
+
+                        int fee = LoanDAO.getEstimatedLateFee(
+                            l.getBookId(),
+                            user.getUsername()
+                        );
+
+                        if (fee > 0) {
+                            hasLateFee = true;
+                            System.out.println(
+                                "Book: " + l.getBookTitle() + 
+                                " | Late Fee: " + fee + " TL"
+                            );
                         }
-                    } catch (InputMismatchException e) {
-                        System.out.println("Invalid Fee ID input.");
-                        sc.nextLine();
                     }
+
+                    if (!hasLateFee) {
+                        System.out.println("You have no outstanding debt.");
+                    }
+
+                    break;
                 }
 
                 case 5 -> running = false;
